@@ -1,0 +1,18 @@
+colorscheme vividchalk
+
+set smarttab
+set nojoinspaces
+
+let g:buffergator_viewport_split_policy="B"
+let g:buffergator_split_size=15
+let NERDTreeWinPos="right"
+
+nnoremap    <F5>   :<C-U>make<CR>
+let g:makeshift_systems = {
+    \'*.cabal': 'cabal-dev install',
+    \}
+
+function! HsProjectDir()
+  return expand("%:p:h:t")
+endfunction
+

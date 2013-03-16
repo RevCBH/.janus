@@ -1,0 +1,6 @@
+[submodule "vim-vividchalk"]
+	path = vim-vividchalk
+	url = https://github.com/tpope/vim-vividchalk
+[submodule "Makeshift"]
+	path = Makeshift
+	url = git@github.com:vim-scripts/Makeshift.git
