@@ -7,12 +7,58 @@ let g:buffergator_viewport_split_policy="B"
 let g:buffergator_split_size=15
 let NERDTreeWinPos="right"
 
-nnoremap    <F5>   :<C-U>make<CR>
+nnoremap <F5>    :<C-U>make<CR><CR>
+
 let g:makeshift_systems = {
-    \'*.cabal': 'cabal-dev install',
+    \'*.cabal': 'cabal configure && cabal-dev build',
     \}
 
-function! HsProjectDir()
-  return expand("%:p:h:t")
+function! SaveAndBuild()
+  :wa
+  let oldmakeprg = &makeprg
+  :Makeshift 
+  :make
+  let &makeprg = oldmakeprg
 endfunction
 
+nnoremap <F6>   :call SaveAndBuild()<CR>
+
+function! HsProjectName()
+  return fnamemodify(getcwd(), ":t") 
+endfunction
+
+function! HsExecProject()
+  :call SaveAndBuild()
+  let projectName = expand("%:p:h:t")
+  let file = pwd . "/dist/build/" . projectName . "/" . projectName
+  if filereadable(file)
+    execute '!' . file
+  else
+    :echo "Not Found: " . file
+  endif
+endfunction
+
+function! CabalDevTest()
+  :wa
+  !cabal-dev configure --enable-tests
+  !cabal-dev build
+  "!cabal-dev test
+  let projectName = HsProjectName() . "-test"
+  exe "!dist/build/" . projectName . "/" . projectName
+endfunction
+
+nnoremap <leader><F5> :call HsExecProject()<CR>
+nnoremap <F7> :call CabalDevTest()<CR>
+
+nnoremap <C-S-P> :CtrlPTag<CR>
+
+au BufEnter *.hs compiler ghc
+
+imap <M-]> <C-T>
+imap <M-[> <C-D>
+
+vmap <M-]> >
+vmap <M-[> <
+
+nmap <M-]> >>
+nmap <M-[> <<
